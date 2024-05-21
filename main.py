@@ -1,5 +1,6 @@
 import os.path
 from http.server import BaseHTTPRequestHandler, HTTPServer
+from urllib.parse import urlparse, parse_qs
 import time
 
 hostName = "localhost"
@@ -20,10 +21,13 @@ class MyServer(BaseHTTPRequestHandler):
 
     def do_GET(self):
         """ Метод для обработки входящих GET-запросов """
+        query_components = parse_qs(urlparse(self.path).query)
+        print(query_components)
+        page_content = self.get_content_data()
         self.send_response(200) # Отправка кода ответа
         self.send_header("Content-type", "text/html")
         self.end_headers()
-        self.wfile.write(bytes(self.get_content_data(), "utf-8"))
+        self.wfile.write(bytes(page_content, "utf-8"))
 
 
 if __name__ == "__main__":
